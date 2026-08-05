@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ИНТЕГ — плагины для Autodesk Revit</title>
+<!--
+    Страница намеренно самодостаточная: ни шрифтов, ни скриптов, ни стилей
+    с внешних адресов. В корпоративной сети сторонние CDN могут быть закрыты,
+    а страница установки обязана открываться всегда.
+
+    Ссылка на скачивание постоянная и никогда не правится при выпуске версии:
+    /releases/latest/download/INTEG-Setup.msi всегда указывает на последний
+    релиз. Номер версии подставляется скриптом, а если он не отработает,
+    остаётся осмысленный текст.
+-->
+<style>
+    :root {
+        --bg: #ffffff;
+        --fg: #16202f;
+        --muted: #5b6878;
+        --accent: #0c1d47;
+        --line: #e3e8ef;
+        --panel: #f6f8fb;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --bg: #10151d;
+            --fg: #e8edf4;
+            --muted: #9aa7b8;
+            --accent: #7ea2ff;
+            --line: #263141;
+            --panel: #171e28;
+        }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        padding: 48px 20px 72px;
+        background: var(--bg);
+        color: var(--fg);
+        font: 16px/1.6 -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    main { max-width: 680px; margin: 0 auto; }
+
+    h1 {
+        margin: 0 0 4px;
+        font-size: 34px;
+        letter-spacing: -0.02em;
+    }
+
+    .tagline { margin: 0 0 36px; color: var(--muted); }
+
+    .download {
+        display: block;
+        padding: 22px 24px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--panel);
+        text-decoration: none;
+        color: inherit;
+        margin-bottom: 12px;
+    }
+
+    .download:hover { border-color: var(--accent); }
+
+    .download strong { display: block; font-size: 19px; color: var(--accent); }
+    .download span { color: var(--muted); font-size: 15px; }
+
+    .notes { margin: 0 0 44px; font-size: 15px; }
+    .notes a { color: var(--accent); }
+
+    h2 {
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin: 36px 0 12px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+    }
+
+    ol, ul { margin: 0; padding-left: 22px; }
+    li { margin-bottom: 8px; }
+
+    footer {
+        margin-top: 44px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 14px;
+    }
+</style>
+</head>
+<body>
+<main>
+    <h1>ИНТЕГ</h1>
+    <p class="tagline">Линейка плагинов для Autodesk Revit</p>
+
+    <a class="download" href="https://github.com/integ-bim/integ-dist/releases/latest/download/INTEG-Setup.msi">
+        <strong>Скачать установщик</strong>
+        <span id="version">актуальная версия</span>
+    </a>
+
+    <p class="notes"><a id="notes-link" href="https://github.com/integ-bim/integ-dist/releases/latest">Что нового в этой версии</a></p>
+
+    <h2>Установка</h2>
+    <ol>
+        <li>Закройте Revit.</li>
+        <li>Запустите скачанный файл <code>INTEG-Setup.msi</code> и нажмите «Далее» до конца.</li>
+        <li>Откройте Revit — появится вкладка <strong>ИНТЕГ</strong>.</li>
+    </ol>
+
+    <h2>Требования</h2>
+    <ul>
+        <li>Autodesk Revit 2020–2027.</li>
+        <li>Права администратора <strong>не нужны</strong>: плагин ставится в профиль пользователя.</li>
+        <li>Если ранее был установлен ИНЖИН — удалите его через «Программы и компоненты», иначе команды продублируются на ленте.</li>
+    </ul>
+
+    <h2>Обновления</h2>
+    <ul>
+        <li>Плагин сам проверяет наличие новой версии при запуске Revit и предлагает обновиться.</li>
+        <li>Скачивание идёт в фоне, установка — после закрытия Revit. Работу прерывать не нужно.</li>
+        <li>Обновляться вручную с этой страницы тоже можно: установщик ставится поверх.</li>
+    </ul>
+
+    <h2>Что-то не работает</h2>
+    <p>Напишите в BIM-отдел. Приложите версию Revit, версию ИНТЕГ (окно «О программе») и скриншот — так разберёмся быстрее.</p>
+
+    <footer>ИНТЕГ · внутренний инструмент компании</footer>
+</main>
+
+<script>
+    // Номер версии — необязательное украшение. Если запрос не прошёл (нет сети,
+    // исчерпан лимит анонимных запросов к API), на странице просто останется
+    // «актуальная версия», а кнопка скачивания будет работать как ни в чём не бывало.
+    fetch("https://api.github.com/repos/integ-bim/integ-dist/releases/latest")
+        .then(function (response) { return response.ok ? response.json() : Promise.reject(); })
+        .then(function (release) {
+            var version = String(release.tag_name || "").replace(/^v/, "");
+            if (!version) return;
+
+            document.getElementById("version").textContent = "версия " + version;
+            document.getElementById("notes-link").href = release.html_url;
+        })
+        .catch(function () { /* оставляем текст по умолчанию */ });
+</script>
+</body>
+</html>
