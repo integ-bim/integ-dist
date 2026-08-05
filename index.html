@@ -113,6 +113,15 @@
     .download:hover { transform: translateY(-2px); }
     .download span { font-size: 14px; font-weight: 600; opacity: 0.75; }
 
+    /* Релиза ещё нет или он недоступен — кнопка не должна вести в 404 */
+    .download.unavailable {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        color: #b9c6d8;
+        cursor: default;
+        pointer-events: none;
+    }
+
     .notes {
         margin: 18px 0 0;
         font-size: 15px;
@@ -221,19 +230,41 @@
 </main>
 
 <script>
-    // Номер версии — необязательное украшение. Не отработает (нет сети, исчерпан
-    // лимит анонимных запросов к API) — останется «актуальная версия», а кнопка
-    // скачивания будет работать как ни в чём не бывало.
-    fetch("https://api.github.com/repos/integ-bim/integ-dist/releases/latest")
-        .then(function (response) { return response.ok ? response.json() : Promise.reject(); })
-        .then(function (release) {
-            var version = String(release.tag_name || "").replace(/^v/, "");
-            if (!version) return;
+    // Проверяем, что релиз вообще опубликован. Если нет — гасим кнопку:
+    // ссылка /releases/latest/download/... честно отдаёт 404, и человек,
+    // нажавший «Скачать», решил бы, что сломался сайт.
+    //
+    // Запрос необязательный. Не прошёл по причине сети или исчерпанного лимита
+    // анонимных запросов к API — кнопка остаётся рабочей со скромной подписью
+    // «актуальная версия»: лучше дать скачать, чем запретить из-за неизвестности.
+    (function () {
+        var button = document.querySelector(".download");
+        var version = document.getElementById("version");
+        var notes = document.getElementById("notes-link");
 
-            document.getElementById("version").textContent = "версия " + version;
-            document.getElementById("notes-link").href = release.html_url;
-        })
-        .catch(function () { /* оставляем текст по умолчанию */ });
+        fetch("https://api.github.com/repos/integ-bim/integ-dist/releases/latest")
+            .then(function (response) {
+                if (response.status === 404) return null;      // релизов ещё нет
+                if (!response.ok) return Promise.reject();      // неизвестно — не трогаем
+                return response.json();
+            })
+            .then(function (release) {
+                if (release === null) {
+                    button.classList.add("unavailable");
+                    button.firstChild.textContent = "Выпуск готовится ";
+                    version.textContent = "установщик появится здесь";
+                    notes.parentNode.style.display = "none";
+                    return;
+                }
+
+                var number = String(release.tag_name || "").replace(/^v/, "");
+                if (!number) return;
+
+                version.textContent = "версия " + number;
+                notes.href = release.html_url;
+            })
+            .catch(function () { /* оставляем всё как есть */ });
+    })();
 </script>
 </body>
 </html>
