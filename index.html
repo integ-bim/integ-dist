@@ -5,33 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ИНТЕГ — плагины для Autodesk Revit</title>
 <!--
-    Страница намеренно самодостаточная: ни шрифтов, ни скриптов, ни стилей
-    с внешних адресов. В корпоративной сети сторонние CDN могут быть закрыты,
-    а страница установки обязана открываться всегда.
+    Фирменный стиль: PANTONE 282 C (#002147) и PANTONE 584 C (#CED54B),
+    основной графический приём — плашки со скруглёнными углами.
 
-    Ссылка на скачивание постоянная и никогда не правится при выпуске версии:
-    /releases/latest/download/INTEG-Setup.msi всегда указывает на последний
-    релиз. Номер версии подставляется скриптом, а если он не отработает,
-    остаётся осмысленный текст.
+    Шрифт по гайду — Nunito. Он указан первым в стеке и подхватится, если
+    установлен в системе; иначе страница спокойно уезжает на системный шрифт.
+    Подключать его с Google Fonts нельзя: страница не должна зависеть ни от
+    одного внешнего адреса — в корпоративной сети сторонние CDN бывают закрыты,
+    а страница установки обязана открываться всегда. Если нужен ровно Nunito,
+    положите woff2 рядом с этим файлом в репозиторий и добавьте @font-face —
+    это будет тот же origin, а не внешний ресурс.
+
+    Ссылка на скачивание постоянная и при выпуске версий не правится:
+    /releases/latest/download/INTEG-Setup.msi всегда ведёт на последний релиз.
 -->
 <style>
     :root {
+        --blue: #002147;
+        --lime: #ced54b;
+
         --bg: #ffffff;
-        --fg: #16202f;
-        --muted: #5b6878;
-        --accent: #0c1d47;
-        --line: #e3e8ef;
-        --panel: #f6f8fb;
+        --fg: #1a2230;
+        --muted: #5d6b7d;
+        --line: #e4e9f0;
+        --card: #f7f9fc;
     }
 
     @media (prefers-color-scheme: dark) {
         :root {
-            --bg: #10151d;
-            --fg: #e8edf4;
-            --muted: #9aa7b8;
-            --accent: #7ea2ff;
-            --line: #263141;
-            --panel: #171e28;
+            --bg: #0b1119;
+            --fg: #e9eef5;
+            --muted: #9dabbc;
+            --line: #223045;
+            --card: #131c28;
         }
     }
 
@@ -39,106 +45,185 @@
 
     body {
         margin: 0;
-        padding: 48px 20px 72px;
+        padding: 40px 20px 64px;
         background: var(--bg);
         color: var(--fg);
-        font: 16px/1.6 -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+        font-family: Nunito, "Segoe UI Variable Text", "Segoe UI", system-ui, Roboto, Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
     }
 
-    main { max-width: 680px; margin: 0 auto; }
+    main { max-width: 660px; margin: 0 auto; }
 
-    h1 {
-        margin: 0 0 4px;
-        font-size: 34px;
-        letter-spacing: -0.02em;
+    /* Плашка-герой в фирменном синем */
+    .hero {
+        position: relative;
+        overflow: hidden;
+        background: var(--blue);
+        border-radius: 24px;
+        padding: 44px 40px 40px;
+        color: #fff;
     }
 
-    .tagline { margin: 0 0 36px; color: var(--muted); }
+    /* Отсылка к знаку: квадрат-«окно» со скруглёнными углами. Декор, не логотип. */
+    .hero::after {
+        content: "";
+        position: absolute;
+        right: -56px;
+        top: -56px;
+        width: 200px;
+        height: 200px;
+        border: 18px solid var(--lime);
+        border-radius: 44px;
+        opacity: 0.18;
+    }
+
+    .hero h1 {
+        position: relative;
+        margin: 0;
+        font-size: 44px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        line-height: 1.1;
+    }
+
+    .hero p {
+        position: relative;
+        margin: 10px 0 32px;
+        color: #b9c6d8;
+        font-size: 17px;
+        max-width: 30ch;
+    }
 
     .download {
-        display: block;
-        padding: 22px 24px;
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        background: var(--panel);
+        position: relative;
+        display: inline-flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 16px 30px;
+        border-radius: 14px;
+        background: var(--lime);
+        color: var(--blue);
         text-decoration: none;
-        color: inherit;
-        margin-bottom: 12px;
+        font-weight: 700;
+        transition: transform 0.12s ease;
     }
 
-    .download:hover { border-color: var(--accent); }
+    .download:hover { transform: translateY(-2px); }
+    .download span { font-size: 14px; font-weight: 600; opacity: 0.75; }
 
-    .download strong { display: block; font-size: 19px; color: var(--accent); }
-    .download span { color: var(--muted); font-size: 15px; }
-
-    .notes { margin: 0 0 44px; font-size: 15px; }
-    .notes a { color: var(--accent); }
-
-    h2 {
+    .notes {
+        margin: 18px 0 0;
         font-size: 15px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--muted);
-        margin: 36px 0 12px;
-        padding-top: 20px;
-        border-top: 1px solid var(--line);
     }
 
-    ol, ul { margin: 0; padding-left: 22px; }
-    li { margin-bottom: 8px; }
+    .notes a { color: var(--muted); }
+    .notes a:hover { color: var(--fg); }
+
+    /* Плашки с содержанием */
+    .card {
+        margin-top: 16px;
+        padding: 26px 30px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+    }
+
+    .card:first-of-type { margin-top: 40px; }
+
+    .card h2 {
+        margin: 0 0 12px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+    }
+
+    ol, ul { margin: 0; padding-left: 20px; }
+    li { margin-bottom: 7px; }
+    li:last-child { margin-bottom: 0; }
+
+    code {
+        padding: 2px 6px;
+        border-radius: 5px;
+        background: rgba(0, 33, 71, 0.07);
+        font-family: "Cascadia Mono", Consolas, monospace;
+        font-size: 0.9em;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        code { background: rgba(206, 213, 75, 0.12); }
+    }
 
     footer {
-        margin-top: 44px;
-        padding-top: 20px;
-        border-top: 1px solid var(--line);
+        margin-top: 36px;
         color: var(--muted);
         font-size: 14px;
+        text-align: center;
+    }
+
+    @media (max-width: 520px) {
+        .hero { padding: 34px 26px 32px; border-radius: 20px; }
+        .hero h1 { font-size: 34px; }
+        .card { padding: 22px 24px; }
     }
 </style>
 </head>
 <body>
 <main>
-    <h1>ИНТЕГ</h1>
-    <p class="tagline">Линейка плагинов для Autodesk Revit</p>
+    <section class="hero">
+        <h1>ИНТЕГ</h1>
+        <p>Линейка плагинов для Autodesk Revit</p>
 
-    <a class="download" href="https://github.com/integ-bim/integ-dist/releases/latest/download/INTEG-Setup.msi">
-        <strong>Скачать установщик</strong>
-        <span id="version">актуальная версия</span>
-    </a>
+        <a class="download" href="https://github.com/integ-bim/integ-dist/releases/latest/download/INTEG-Setup.msi">
+            Скачать установщик
+            <span id="version">актуальная версия</span>
+        </a>
 
-    <p class="notes"><a id="notes-link" href="https://github.com/integ-bim/integ-dist/releases/latest">Что нового в этой версии</a></p>
+        <p class="notes"><a id="notes-link" href="https://github.com/integ-bim/integ-dist/releases/latest">Что нового в этой версии</a></p>
+    </section>
 
-    <h2>Установка</h2>
-    <ol>
-        <li>Закройте Revit.</li>
-        <li>Запустите скачанный файл <code>INTEG-Setup.msi</code> и нажмите «Далее» до конца.</li>
-        <li>Откройте Revit — появится вкладка <strong>ИНТЕГ</strong>.</li>
-    </ol>
+    <section class="card">
+        <h2>Установка</h2>
+        <ol>
+            <li>Закройте Revit.</li>
+            <li>Запустите скачанный <code>INTEG-Setup.msi</code> и нажимайте «Далее» до конца.</li>
+            <li>Откройте Revit — появится вкладка <strong>ИНТЕГ</strong>.</li>
+        </ol>
+    </section>
 
-    <h2>Требования</h2>
-    <ul>
-        <li>Autodesk Revit 2020–2027.</li>
-        <li>Права администратора <strong>не нужны</strong>: плагин ставится в профиль пользователя.</li>
-        <li>Если ранее был установлен ИНЖИН — удалите его через «Программы и компоненты», иначе команды продублируются на ленте.</li>
-    </ul>
+    <section class="card">
+        <h2>Требования</h2>
+        <ul>
+            <li>Autodesk Revit 2020–2027.</li>
+            <li>Права администратора <strong>не нужны</strong>: плагин ставится в профиль пользователя.</li>
+            <li>Если на компьютере стоит предыдущая версия плагина — удалите её через «Программы и компоненты», иначе команды продублируются на ленте.</li>
+        </ul>
+    </section>
 
-    <h2>Обновления</h2>
-    <ul>
-        <li>Плагин сам проверяет наличие новой версии при запуске Revit и предлагает обновиться.</li>
-        <li>Скачивание идёт в фоне, установка — после закрытия Revit. Работу прерывать не нужно.</li>
-        <li>Обновляться вручную с этой страницы тоже можно: установщик ставится поверх.</li>
-    </ul>
+    <section class="card">
+        <h2>Обновления</h2>
+        <ul>
+            <li>Плагин сам проверяет новую версию при запуске Revit и предлагает обновиться.</li>
+            <li>Загрузка идёт в фоне, установка — после закрытия Revit. Работу прерывать не нужно.</li>
+            <li>Обновиться вручную с этой страницы тоже можно: установщик ставится поверх.</li>
+        </ul>
+    </section>
 
-    <h2>Что-то не работает</h2>
-    <p>Напишите в BIM-отдел. Приложите версию Revit, версию ИНТЕГ (окно «О программе») и скриншот — так разберёмся быстрее.</p>
+    <section class="card">
+        <h2>Что-то не работает</h2>
+        <p style="margin:0">Напишите в BIM-отдел. Приложите версию Revit, версию ИНТЕГ (окно «О программе») и скриншот — так разберёмся быстрее.</p>
+    </section>
 
     <footer>ИНТЕГ · внутренний инструмент компании</footer>
 </main>
 
 <script>
-    // Номер версии — необязательное украшение. Если запрос не прошёл (нет сети,
-    // исчерпан лимит анонимных запросов к API), на странице просто останется
-    // «актуальная версия», а кнопка скачивания будет работать как ни в чём не бывало.
+    // Номер версии — необязательное украшение. Не отработает (нет сети, исчерпан
+    // лимит анонимных запросов к API) — останется «актуальная версия», а кнопка
+    // скачивания будет работать как ни в чём не бывало.
     fetch("https://api.github.com/repos/integ-bim/integ-dist/releases/latest")
         .then(function (response) { return response.ok ? response.json() : Promise.reject(); })
         .then(function (release) {
