@@ -22,6 +22,7 @@
 <style>
     :root {
         --blue: #002147;
+        --blue-2: #0a3568;
         --lime: #ced54b;
 
         --bg: #ffffff;
@@ -45,7 +46,7 @@
 
     body {
         margin: 0;
-        padding: 40px 20px 64px;
+        padding: 48px 20px 64px;
         background: var(--bg);
         color: var(--fg);
         font-family: Nunito, "Segoe UI Variable Text", "Segoe UI", system-ui, Roboto, Arial, sans-serif;
@@ -54,50 +55,83 @@
         -webkit-font-smoothing: antialiased;
     }
 
-    main { max-width: 660px; margin: 0 auto; }
+    main { max-width: 720px; margin: 0 auto; }
 
-    /* Плашка-герой в фирменном синем */
+    /* Плашка-герой в фирменном синем, с лёгким градиентом — оба цвета фирменные */
     .hero {
         position: relative;
         overflow: hidden;
-        background: var(--blue);
-        border-radius: 24px;
-        padding: 44px 40px 40px;
+        background: linear-gradient(155deg, var(--blue) 0%, var(--blue-2) 100%);
+        border-radius: 28px;
+        padding: 48px 44px 44px;
         color: #fff;
     }
 
-    /* Отсылка к знаку: квадрат-«окно» со скруглёнными углами. Декор, не логотип. */
+    /* Отсылка к знаку: квадраты-«окна» со скруглёнными углами. Декор, не логотип. */
+    .hero::before {
+        content: "";
+        position: absolute;
+        right: -70px;
+        top: -70px;
+        width: 220px;
+        height: 220px;
+        border: 20px solid var(--lime);
+        border-radius: 50px;
+        opacity: 0.14;
+    }
+
     .hero::after {
         content: "";
         position: absolute;
-        right: -56px;
-        top: -56px;
-        width: 200px;
-        height: 200px;
-        border: 18px solid var(--lime);
-        border-radius: 44px;
-        opacity: 0.18;
+        right: 30px;
+        bottom: -90px;
+        width: 150px;
+        height: 150px;
+        border: 14px solid var(--lime);
+        border-radius: 36px;
+        opacity: 0.1;
+    }
+
+    .eyebrow {
+        position: relative;
+        display: inline-block;
+        margin: 0 0 14px;
+        padding: 5px 12px;
+        border-radius: 999px;
+        background: rgba(206, 213, 75, 0.16);
+        color: var(--lime);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
     }
 
     .hero h1 {
         position: relative;
         margin: 0;
-        font-size: 44px;
+        font-size: 42px;
         font-weight: 800;
-        letter-spacing: 0.14em;
+        letter-spacing: 0.1em;
         line-height: 1.1;
     }
 
     .hero p {
         position: relative;
-        margin: 10px 0 32px;
-        color: #b9c6d8;
+        margin: 12px 0 30px;
+        color: #c3cfe0;
         font-size: 17px;
-        max-width: 30ch;
+        max-width: 34ch;
+    }
+
+    .actions {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 18px;
     }
 
     .download {
-        position: relative;
         display: inline-flex;
         flex-direction: column;
         gap: 2px;
@@ -107,52 +141,112 @@
         color: var(--blue);
         text-decoration: none;
         font-weight: 700;
-        transition: transform 0.12s ease;
+        transition: transform 0.12s ease, box-shadow 0.12s ease;
+        box-shadow: 0 8px 24px -12px rgba(206, 213, 75, 0.6);
     }
 
     .download:hover { transform: translateY(-2px); }
-    .download span { font-size: 14px; font-weight: 600; opacity: 0.75; }
+    .download span { font-size: 13px; font-weight: 600; opacity: 0.75; }
 
     /* Релиза ещё нет или он недоступен — кнопка не должна вести в 404 */
     .download.unavailable {
         background: transparent;
         border: 1px solid rgba(255, 255, 255, 0.28);
-        color: #b9c6d8;
+        color: #c3cfe0;
         cursor: default;
         pointer-events: none;
+        box-shadow: none;
     }
 
-    .notes {
-        margin: 18px 0 0;
-        font-size: 15px;
+    .notes-link {
+        font-size: 14px;
+        font-weight: 600;
+        color: #c3cfe0;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(195, 207, 224, 0.4);
+        padding-bottom: 1px;
     }
 
-    .notes a { color: var(--muted); }
-    .notes a:hover { color: var(--fg); }
+    .notes-link:hover { color: #fff; border-color: #fff; }
 
     /* Плашки с содержанием */
-    .card {
-        margin-top: 16px;
-        padding: 26px 30px;
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: 18px;
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 40px;
     }
 
-    .card:first-of-type { margin-top: 40px; }
+    .card {
+        padding: 26px 28px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+    }
+
+    .card.full { grid-column: 1 / -1; }
 
     .card h2 {
-        margin: 0 0 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 16px;
         font-size: 13px;
-        font-weight: 700;
+        font-weight: 800;
         letter-spacing: 0.1em;
         text-transform: uppercase;
         color: var(--muted);
     }
 
-    ol, ul { margin: 0; padding-left: 20px; }
-    li { margin-bottom: 7px; }
-    li:last-child { margin-bottom: 0; }
+    .card h2::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 3px;
+        background: var(--lime);
+        flex: none;
+    }
+
+    .steps {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: step;
+    }
+
+    .steps li {
+        position: relative;
+        margin-bottom: 14px;
+        padding-left: 34px;
+        counter-increment: step;
+    }
+
+    .steps li:last-child { margin-bottom: 0; }
+
+    .steps li::before {
+        content: counter(step);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 22px;
+        height: 22px;
+        border-radius: 7px;
+        background: var(--blue);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .steps li::before { background: var(--lime); color: var(--blue); }
+    }
+
+    ul.plain { margin: 0; padding-left: 20px; }
+    ul.plain li { margin-bottom: 9px; }
+    ul.plain li:last-child { margin-bottom: 0; }
 
     code {
         padding: 2px 6px;
@@ -167,64 +261,72 @@
     }
 
     footer {
-        margin-top: 36px;
+        margin-top: 40px;
         color: var(--muted);
         font-size: 14px;
         text-align: center;
     }
 
+    @media (max-width: 640px) {
+        .grid { grid-template-columns: 1fr; }
+    }
+
     @media (max-width: 520px) {
-        .hero { padding: 34px 26px 32px; border-radius: 20px; }
-        .hero h1 { font-size: 34px; }
-        .card { padding: 22px 24px; }
+        .hero { padding: 36px 26px 32px; border-radius: 22px; }
+        .hero h1 { font-size: 32px; }
+        .card { padding: 22px 22px; }
     }
 </style>
 </head>
 <body>
 <main>
     <section class="hero">
+        <span class="eyebrow">Autodesk Revit · 2020–2027</span>
         <h1>ИНТЕГ</h1>
-        <p>Линейка плагинов для Autodesk Revit</p>
+        <p>Линейка плагинов для проектирования в Revit: от проверки модели на соответствие стандарту до автоматизации рутинных задач.</p>
 
-        <a class="download" href="https://github.com/integ-bim/integ-dist/releases/latest/download/INTEG-Setup.msi">
-            Скачать установщик
-            <span id="version">актуальная версия</span>
-        </a>
-
-        <p class="notes"><a id="notes-link" href="https://github.com/integ-bim/integ-dist/releases/latest">Что нового в этой версии</a></p>
+        <div class="actions">
+            <a class="download" href="https://github.com/integ-bim/integ-dist/releases/latest/download/INTEG-Setup.msi">
+                Скачать установщик
+                <span id="version">актуальная версия</span>
+            </a>
+            <a class="notes-link" id="notes-link" href="https://github.com/integ-bim/integ-dist/releases/latest">Что нового →</a>
+        </div>
     </section>
 
-    <section class="card">
-        <h2>Установка</h2>
-        <ol>
-            <li>Закройте Revit.</li>
-            <li>Запустите скачанный <code>INTEG-Setup.msi</code> и нажимайте «Далее» до конца.</li>
-            <li>Откройте Revit — появится вкладка <strong>ИНТЕГ</strong>.</li>
-        </ol>
-    </section>
+    <div class="grid">
+        <section class="card">
+            <h2>Установка</h2>
+            <ol class="steps">
+                <li>Закройте Revit.</li>
+                <li>Запустите скачанный <code>INTEG-Setup.msi</code> и нажимайте «Далее» до конца.</li>
+                <li>Откройте Revit — появится вкладка <strong>ИНТЕГ</strong>.</li>
+            </ol>
+        </section>
 
-    <section class="card">
-        <h2>Требования</h2>
-        <ul>
-            <li>Autodesk Revit <strong>2022, 2024, 2026 или 2027</strong>. Другие версии пока не поддерживаются.</li>
-            <li>Права администратора <strong>не нужны</strong>: плагин ставится в профиль пользователя.</li>
-            <li>Если на компьютере стоит предыдущая версия плагина — удалите её через «Программы и компоненты», иначе команды продублируются на ленте.</li>
-        </ul>
-    </section>
+        <section class="card">
+            <h2>Требования</h2>
+            <ul class="plain">
+                <li>Autodesk Revit <strong>2020–2027</strong>, любая версия из этого диапазона.</li>
+                <li>Права администратора <strong>не нужны</strong> — плагин ставится в профиль пользователя.</li>
+                <li>Старую версию плагина удалять не нужно — установщик обновляет её на месте.</li>
+            </ul>
+        </section>
 
-    <section class="card">
-        <h2>Обновления</h2>
-        <ul>
-            <li>Плагин сам проверяет новую версию при запуске Revit и предлагает обновиться.</li>
-            <li>Загрузка идёт в фоне, установка — после закрытия Revit. Работу прерывать не нужно.</li>
-            <li>Обновиться вручную с этой страницы тоже можно: установщик ставится поверх.</li>
-        </ul>
-    </section>
+        <section class="card full">
+            <h2>Обновления</h2>
+            <ul class="plain">
+                <li>Плагин сам проверяет новую версию при запуске Revit и предлагает обновиться.</li>
+                <li>Загрузка идёт в фоне, установка — после закрытия Revit. Работу прерывать не нужно.</li>
+                <li>Обновиться вручную с этой страницы тоже можно: установщик ставится поверх.</li>
+            </ul>
+        </section>
 
-    <section class="card">
-        <h2>Что-то не работает</h2>
-        <p style="margin:0">Напишите в BIM-отдел. Приложите версию Revit, версию ИНТЕГ (окно «О программе») и скриншот — так разберёмся быстрее.</p>
-    </section>
+        <section class="card full">
+            <h2>Что-то не работает</h2>
+            <p style="margin:0">Напишите в BIM-отдел. Приложите версию Revit, версию ИНТЕГ (окно «О программе») и скриншот — так разберёмся быстрее.</p>
+        </section>
+    </div>
 
     <footer>ИНТЕГ · внутренний инструмент компании</footer>
 </main>
@@ -253,7 +355,7 @@
                     button.classList.add("unavailable");
                     button.firstChild.textContent = "Выпуск готовится ";
                     version.textContent = "установщик появится здесь";
-                    notes.parentNode.style.display = "none";
+                    notes.style.display = "none";
                     return;
                 }
 
